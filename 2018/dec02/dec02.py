@@ -282,3 +282,35 @@ for boxid in input:
     if threes_b:
         threes += 1
 print(twos, threes, twos*threes)
+
+#%%
+def match_count(list1, list2):
+    cnt = 0
+    for i in range(len(list1)):
+        if list1[i] == list2[i]:
+            cnt += 1
+    return cnt
+
+t = len(input)
+for i, boxid in enumerate(input):
+    print(f'{i} of {t}')
+    for j, boxid2 in enumerate(input):
+        if boxid == boxid2:
+            continue
+        compare.append([boxid, boxid2, match_count(boxid, boxid2)])
+print(len(compare))
+
+#%%
+import pandas as pd
+df = pd.DataFrame(compare)
+df.columns = ['boxid1', 'boxid2', 'match_count']
+df
+
+#%%
+print(df.sort_values('match_count', axis=0, ascending=False).head(2))
+"""
+                           boxid1                      boxid2  match_count
+50464  lsrivmotzbdxpkxnaqmuwcychj  lsrivmotzbdxpkxnaqmuwcgchj           25
+41783  lsrivmotzbdxpkxnaqmuwcgchj  lsrivmotzbdxpkxnaqmuwcychj           25
+"""
+

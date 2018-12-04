@@ -266,6 +266,8 @@ threes_b = False
 # if any chars in the boxid fit the bill
 for boxid in input:
     charmap = {}
+    twos_b = False
+    threes_b = False
     # iterate through chars, count occurrences
     for c in boxid:
         charmap[c] = charmap.get(c, 0) + 1

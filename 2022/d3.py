@@ -8,8 +8,13 @@ def item_priority(i):
         return ord(i) - ord("A") + 26 + 1
 
 
+def chunk_list(l, n):
+    for i in range(0, len(l), n):
+        yield l[i : i + n]
+
+
 class Rucksacks:
-    def __init__(self) -> None:
+    def __init__(self):
         self.rucksacks = []
 
     def add(self, rucksack):
@@ -20,6 +25,19 @@ class Rucksacks:
         for rucksack in self.rucksacks:
             priority_of_dupes.append(rucksack.priority_of_dupe())
         return sum(priority_of_dupes)
+
+    def get_sum_group_priorities(self):
+        # divide into groups and calculate priorities
+        priorities = []
+        for group in chunk_list(self.rucksacks, 3):
+            # get unique items for each rucksack in current group
+            uniques = []
+            for rucksack in group:
+                uniques.extend(rucksack.get_uniques())
+            # find the item that occurs 3 times
+            badge = [x for x in set(uniques) if uniques.count(x) == 3][0]
+            priorities.append(item_priority(badge))
+        return sum(priorities)
 
 
 class Rucksack:
@@ -40,6 +58,9 @@ class Rucksack:
     def priority_of_dupe(self):
         dupe = self.get_dupe()
         return item_priority(dupe)
+
+    def get_uniques(self):
+        return list(set(self.items))
 
 
 @pytest.mark.parametrize(
@@ -85,7 +106,23 @@ def get_sum_priority_of_dupes(path):
     return rucksacks.get_sum_dupes_priority()
 
 
+def test_get_sum_priority_of_groups():
+    sum_groups = get_sum_priority_of_groups("2022/d3.test")
+    assert sum_groups == 70
+
+
+def get_sum_priority_of_groups(path):
+    rucksacks = Rucksacks()
+    contents = open(path).read().splitlines()
+    for content in contents:
+        rucksack = Rucksack(content)
+        rucksacks.add(rucksack)
+    return rucksacks.get_sum_group_priorities()
+
+
 if __name__ == "__main__":
     test_get_sum_priority_of_dupes()
     sum_priority_of_dupes = get_sum_priority_of_dupes("2022/d3.prod")
     print("sum_priority_of_dupes", sum_priority_of_dupes)
+    sum_priority_of_groups = get_sum_priority_of_groups("2022/d3.prod")
+    print("sum_priority_of_groups", sum_priority_of_groups)

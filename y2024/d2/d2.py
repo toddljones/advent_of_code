@@ -25,8 +25,7 @@ def count_safe_reports_with_tolerance(reports: List[List[int]]) -> int:
             safe += 1
         else:
             # pop one element at a time and check if the report is safe
-            l_report = len(report)
-            for i in range(l_report):
+            for i in range(len(report)):
                 if check_report(report[:i] + report[i + 1 :]):
                     safe += 1
                     break

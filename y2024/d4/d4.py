@@ -25,6 +25,8 @@ class WordSearch:
         self.grid = grid
         self.word = word.upper()
         self.occurrences: List[List[int]] = []
+        self.occurrences_with_same_centroid: List[List[int]] = []
+        self.occurences_with_same_centroid_mapped: List[int] = []
 
     def grid_to_upper(self):
         return [[cell.upper() for cell in row] for row in self]
@@ -84,6 +86,39 @@ class WordSearch:
     def count_occurrences(self):
         return len(self.occurrences)
 
+    def find_occurences_with_same_centroid(self):
+        """
+        - iterate over each centroid
+        - find all other occurrences with the same centroid
+        - return the count of occurrences with the same centroid
+        """
+        # if len word is even, return None
+        if len(self.word) % 2 == 0:
+            return None
+        for i, occurrence in enumerate(self.occurrences):
+            if i in self.occurences_with_same_centroid_mapped:
+                continue
+            centroid = self.get_centroid(occurrence)
+            if centroid is None:
+                continue
+            for j, other_occurrence in enumerate(self.occurrences):
+                if i == j:
+                    continue
+                other_centroid = self.get_centroid(other_occurrence)
+                if centroid == other_centroid:
+                    self.occurences_with_same_centroid_mapped.extend([i, j])
+                    self.occurrences_with_same_centroid.append(
+                        [occurrence, other_occurrence]
+                    )
+
+    def get_centroid(self, occurrence):
+        len_occurrence = len(occurrence)
+        centroid = occurrence[len_occurrence // 2]
+        return centroid
+
+    def count_occurrences_with_same_centroid(self):
+        return len(self.occurrences_with_same_centroid)
+
 
 def p1():
     grid = s_as_list_of_lists(puzzle)
@@ -92,5 +127,20 @@ def p1():
     return word_search.count_occurrences()
 
 
+def p2():
+    grid = s_as_list_of_lists(puzzle)
+    word_search = WordSearch(grid, "MAS")
+    word_search.directions = {
+        "up_left": (-1, -1),
+        "up_right": (1, -1),
+        "down_left": (-1, 1),
+        "down_right": (1, 1),
+    }
+    word_search.map_all_occurrences()
+    word_search.find_occurences_with_same_centroid()
+    return word_search.count_occurrences_with_same_centroid()
+
+
 if __name__ == "__main__":
     print(p1())
+    print(p2())

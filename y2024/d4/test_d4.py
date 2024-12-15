@@ -128,3 +128,51 @@ def test_p1_sample():
     result = word_search.count_occurrences()
 
     assert result == expected_result
+
+
+def test_find_occurrences_with_same_centroid():
+    from y2024.d4.d4 import WordSearch
+
+    grid = [
+        ["M", "M", "S"],
+        ["M", "A", "M"],
+        ["M", "M", "S"],
+    ]
+
+    directions = {
+        "up_left": (-1, -1),
+        "up_right": (1, -1),
+        "down_left": (-1, 1),
+        "down_right": (1, 1),
+    }
+
+    word_search = WordSearch(grid, "SAM")
+    word_search.directions = directions
+    word_search.map_all_occurrences()
+    word_search.find_occurences_with_same_centroid()
+
+    expected_occurrences = [[[(2, 0), (1, 1), (0, 2)], [(2, 2), (1, 1), (0, 0)]]]
+
+    assert word_search.occurrences_with_same_centroid == expected_occurrences
+
+
+def test_count_occurrences_with_same_centroid():
+    from y2024.d4.d4 import WordSearch
+    from y2024.d4.data import sample, s_as_list_of_lists
+
+    grid = s_as_list_of_lists(sample)
+
+    directions = {
+        "up_left": (-1, -1),
+        "up_right": (1, -1),
+        "down_left": (-1, 1),
+        "down_right": (1, 1),
+    }
+
+    word_search = WordSearch(grid, "MAS")
+    word_search.directions = directions
+    word_search.map_all_occurrences()
+    word_search.find_occurences_with_same_centroid()
+    cnt_same_centroid = word_search.count_occurrences_with_same_centroid()
+
+    assert cnt_same_centroid == 9

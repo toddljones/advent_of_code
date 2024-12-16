@@ -97,3 +97,7 @@ def test_gallivant(guard_gallivant):
     actual = guard_gallivant.gallivant()
 
     assert actual == expected
+
+
+def test_place_obstacles(guard_gallivant):
+    assert guard_gallivant.place_obstacles() == 6
